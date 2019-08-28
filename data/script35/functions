@@ -1,0 +1,7 @@
+is_digit(){
+    #read -p "Please input a number: " NUM                                                         
+    [[ "$1" =~ ^[1-9][0-9]*$ ]] || { echo "Input false " ; exit; }
+}
+os_version() {
+    sed -rn "s/.* ([0-9]+)\..*/\1/p" /etc/redhat-release
+}

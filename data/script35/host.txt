@@ -1,0 +1,2 @@
+192.168.35.6 root magedu
+192.168.35.5 root centos

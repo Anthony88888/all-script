@@ -1,0 +1,8 @@
+#!/usr/bin/expect
+spawn ssh 192.168.35.6
+expect {
+"yes/no" { send "yes\n";exp_continue }
+"password" { send "magedu\n" }
+}
+interact
+#expect eof

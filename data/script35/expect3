@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+set ip 192.168.35.6
+set user root
+set password magedu
+set timeout 10
+spawn ssh $user@$ip
+expect {
+"yes/no" { send "yes\n";exp_continue }
+"password" { send "$password\n" }
+}
+interact

@@ -1,0 +1,7 @@
+#!/usr/bin/expect
+spawn scp /etc/fstab 192.168.35.6:/data
+expect {
+"yes/no" { send "yes\n";exp_continue }
+"password" { send "magedu\n" }
+}
+expect eof
