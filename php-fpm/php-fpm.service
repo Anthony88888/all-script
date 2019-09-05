@@ -1,0 +1,18 @@
+
+#根据自己实际情况,定义(ExecStart=)的路径.
+#此启动脚本直接放在/usr/lib/systemd/system/下即可
+#systemctl daemon-reload 使用此命令重载配置文件
+
+[Unit]
+Description=The PHP FastCGI Process Manager
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/apps/php/sbin/php-fpm
+ExecStop=/bin/pkill -9 php-fpm
+PrivateTmp=true
+
+
+[Install]
+WantedBy=multi-user.target

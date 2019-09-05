@@ -1,0 +1,68 @@
+
+
+二、部署PHP
+编译安装php7.2.16
+yum -y install wget vim pcre pcre-devel openssl openssl-devel libicudevel gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2- devel ncurses ncurses-devel curl curl-devel krb5-devel libidn libidn-devel openldap openldap-devel nss_ldap jemalloc-devel cmake boost-devel bison automake libevent libevent-devel gd gd-devel libtool* libmcrypt libmcrypt-devel mcrypt mhash libxslt libxslt-devel readline readline-devel gmp gmp-devel libcurl libcurl-devel openjpegdevel
+
+
+cd /usr/local/src/
+[root@centos7 src]#pwd
+/usr/local/src
+tar xf php-7.2.16.tar.gz
+cd php-7.2.16
+./configure --prefix=/apps/php --enable-fpm --with-fpm-user=www --with-fpm-group=www --with-pear --with-curl --with-png-dir --with-freetype-dir --with-iconv --with-mhash --with-zlib --with-xmlrpc --with-xsl --with-openssl --with-mysqli --with-pdo-mysql --disable-debug --enable-zip --enable-sockets --enable-soap --enable-inline-optimization --enable-xml --enable-ftp --enable-exif --enable-wddx --enable-bcmath --enable-calendar --enable-shmop --enable-dba --enable-sysvsem --enable-sysvshm --enable-sysvmsg
+make -j 4 &&make install
+
+
+准备PHP配置文件
+cd /apps/php/etc/php-fpm.d/
+cp www.conf.default www.conf
+cp /usr/local/src/php-7.2.16/php.ini-production /apps/php/etc/php.ini
+useradd www -s /sbin/nologin -u 1001
+grep -v ";" www.conf | grep -v "^$"
+[root@centos7 php-fpm.d]#grep -v ";" www.conf | grep -v "^$"
+[www]
+user = www
+group = www
+listen = 127.0.0.1:9000
+listen.allowed_clients = 127.0.0.1
+pm = dynamic
+pm.max_children = 50
+pm.start_servers = 30
+pm.min_spare_servers = 30
+pm.max_spare_servers = 35
+pm.status_path = /pm_status
+ping.path = /ping
+ping.response = pong
+access.log = log/$pool.access.log
+slowlog = log/$pool.log.slow
+
+
+
+
+[root@centos7 php-fpm.d]#mkdir /apps/php/log/      #日志文件路径
+[root@centos7 php-fpm.d]#cd /apps/php/etc/
+[root@centos7 etc]#cp php-fpm.conf.default php-fpm.conf
+
+
+
+
+
+
+启动并验证php-fpm
+#检测语法并启动php-fpm：
+/apps/php/sbin/php-fpm -t
+[18-Mar-2019 21:37:53] NOTICE: configuration file /apps/php/etc/php-fpm.conf test is successful
+#验证php-fpm：
+[root@centos7 etc]#/apps/php/sbin/php-fpm -c /apps/php/etc/php.ini 
+[root@centos7 etc]#ps -ef |grep php-fpm
+root     121357      1  0 21:38 ?        00:00:00 php-fpm: master process (/apps/php/etc/php-fp.conf)
+www      121358 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+www      121359 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+www      121360 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+www      121361 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+www      121362 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+www      121363 121357  0 21:38 ?        00:00:00 php-fpm: pool www
+
+[root@centos7 etc]#netstat -tanlp | grep php-fpm
+tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      121357/php-fpm: mas
