@@ -1,0 +1,19 @@
+使用cloudflare的反代实现加速访问的几条常用命令.
+用iptables反代，相当于做了个加速器（公共）把CF与国内访客的请求强行拉直在亚太地区
+iptables -t nat -A POSTROUTING -p tcp -d 1.0.0.2 --dport 80 -j SNAT --to-source 35.221.137.161
+iptables -t nat -A POSTROUTING -p tcp -d 1.0.0.2 --dport 443 -j SNAT --to-source 35.221.137.161
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 1.0.0.5
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination 1.0.0.5
+
+
+附部署参考的博客地址:https://cangshui.net/?p=4030#ip
+
+
+
+
+
+
+
+
+
